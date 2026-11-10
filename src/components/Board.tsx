@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import type { MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { useDrag, type DragCallbacks } from '../hooks/useDrag';
-import { containsPoint, keepInside, rectFromCorners, toRect, type Point, type Rect, type Size } from '../model/geometry';
+import { keepInside, rectsIntersect, rectFromCorners, toRect, type Point, type Rect, type Size } from '../model/geometry';
 import { constrainSize, DEFAULT_NOTE_SIZE, MIN_DRAWN_SIZE, type Note, type NoteId } from '../model/note';
 import type { NotesActions } from '../state/useNotesStore';
 import { NoteView, type NoteDragMode } from './NoteView';
@@ -35,6 +35,7 @@ export function Board({ notes, actions, focusedNoteId, onCreateNote }: BoardProp
     const bounds = canvas.getBoundingClientRect();
     return {
       size: { width: bounds.width, height: bounds.height } satisfies Size,
+      origin: { x: bounds.left, y: bounds.top } satisfies Point,
       toLocal: (client: Point): Point => ({ x: client.x - bounds.left, y: client.y - bounds.top }),
     };
   }, []);
@@ -63,7 +64,7 @@ export function Board({ notes, actions, focusedNoteId, onCreateNote }: BoardProp
 
   const handleNoteDragStart = useCallback(
     (note: Note, mode: NoteDragMode, event: ReactPointerEvent) => {
-      const { size: bounds } = getCanvas();
+      const { size: bounds, origin } = getCanvas();
       const { rect } = note;
 
       if (mode === 'resize') {
@@ -85,16 +86,20 @@ export function Board({ notes, actions, focusedNoteId, onCreateNote }: BoardProp
         return;
       }
 
-      // The trash zone is fixed, so its geometry can be measured once per gesture.
-      const trash = trashRef.current && toRect(trashRef.current.getBoundingClientRect());
+      // The trash zone is fixed, so it is measured once per gesture and converted to canvas coordinates.
+      const trashClient = trashRef.current && toRect(trashRef.current.getBoundingClientRect());
+      const trash = trashClient && { ...trashClient, x: trashClient.x - origin.x, y: trashClient.y - origin.y };
       runGesture(
         event,
-        (delta, pointer) => ({
-          kind: 'move' as const,
-          id: note.id,
-          rect: keepInside({ ...rect, x: rect.x + delta.x, y: rect.y + delta.y }, bounds),
-          overTrash: trash !== null && containsPoint(trash, pointer),
-        }),
+        (delta) => {
+          const moved = keepInside({ ...rect, x: rect.x + delta.x, y: rect.y + delta.y }, bounds);
+          return {
+            kind: 'move' as const,
+            id: note.id,
+            rect: moved,
+            overTrash: trash !== null && rectsIntersect(moved, trash),
+          };
+        },
         (result) => {
           if (result.overTrash) actions.remove(note.id);
           else actions.update(note.id, { rect: result.rect });

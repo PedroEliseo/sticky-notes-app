@@ -25,11 +25,9 @@ export const rectFromCorners = (a: Point, b: Point): Rect => ({
   height: Math.abs(a.y - b.y),
 });
 
-export const containsPoint = (rect: Rect, point: Point): boolean =>
-  point.x >= rect.x &&
-  point.x <= rect.x + rect.width &&
-  point.y >= rect.y &&
-  point.y <= rect.y + rect.height;
+/** True if the rects share any area (touching edges don't count). */
+export const rectsIntersect = (a: Rect, b: Rect): boolean =>
+  a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height;
 
 export const rectsEqual = (a: Rect, b: Rect): boolean =>
   a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height;

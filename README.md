@@ -9,7 +9,7 @@ All four required features:
 - **Create a note at a given position and size.** Drag on empty board space to draw the note's rectangle; the preview shows exactly the note that will be created. You can also double-click the board to add a default-size note at that spot, or click **+ New note** in the toolbar.
 - **Resize.** Drag the handle in a note's bottom-right corner.
 - **Move.** Drag a note by its colored header.
-- **Delete.** Drag a note onto the trash zone in the bottom-right corner. The zone highlights when the pointer is over it, and the note fades.
+- **Delete.** Drag a note onto the trash zone in the bottom-right corner. As soon as any part of the note overlaps the zone, the zone highlights and the note fades; releasing it then deletes the note.
 
 All optional features:
 
