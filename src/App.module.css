@@ -1,0 +1,13 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.message {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  color: #888;
+  background: #f4f1ea;
+}

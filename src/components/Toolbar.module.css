@@ -1,0 +1,76 @@
+.toolbar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 52px;
+  padding: 0 20px;
+  background: #fff;
+  border-bottom: 1px solid #e0dcd3;
+  z-index: 3;
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.addButton {
+  padding: 6px 14px;
+  border: 1px solid #c9c2b4;
+  border-radius: 6px;
+  background: #fffdf5;
+  font: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.addButton:hover {
+  background: #fff6cc;
+}
+
+.colors {
+  display: flex;
+  gap: 6px;
+}
+
+.swatch {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid rgb(0 0 0 / 0.2);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.swatch[aria-checked='true'] {
+  outline: 2px solid #555;
+  outline-offset: 2px;
+}
+
+.yellow { background: #fff59d; }
+.pink   { background: #f8bbd0; }
+.green  { background: #c5e1a5; }
+.blue   { background: #b3e5fc; }
+.purple { background: #d1c4e9; }
+
+.hint {
+  flex: 1;
+  margin: 0;
+  overflow: hidden;
+  color: #777;
+  font-size: 13px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.status {
+  font-size: 13px;
+  color: #4caf50;
+  white-space: nowrap;
+}
+
+.saving { color: #999; }
+.error  { color: #d32f2f; }
